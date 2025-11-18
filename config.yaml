@@ -1,0 +1,5 @@
+trim_galore:
+  clip_R1: 15
+  clip_R2: 15
+  quality: 20 # Minimum quality score to trim ends
+  length: 20 # Minimum read length

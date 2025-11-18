@@ -1,0 +1,11 @@
+name: mpileup_call_pipeline
+channels:
+  - bioconda
+dependencies:
+  - bcftools
+  - bwa
+  - multiqc
+  - samtools
+  - snakemake
+  - snakemake-executor-plugin-slurm
+  - trim-galore
