@@ -13,7 +13,8 @@ Steps
 
 rule remove_duplicate_reads:
     input:
-        "aligned_bams/{sample}.bam"
+        bam="aligned_bams/{sample}.bam",
+        bai="aligned_bams/{sample}.bam.bai"
     output:
         bam="deduplicated_bams/{sample}.bam",
         bai="deduplicated_bams/{sample}.bam.bai"
@@ -21,15 +22,11 @@ rule remove_duplicate_reads:
         qos='short',
         mem_mb=4*1024,
         runtime=2*60,
-    log:
-        out = "logs/remove_duplicate_reads/{sample}.out",
-        err = "logs/remove_duplicate_reads/{sample}.err"
     shell:
         """
-        samtools collate     -O -u {input} | \
+        samtools collate     -O -u {input.bam} | \
             samtools fixmate -m -u - - | \
             samtools sort    -u - | \
-            samtools markdup -r - {output.bam} \
-            > {log.out} 2> {log.err}
+            samtools markdup -r - {output.bam}
         samtools index {output.bai}
         """

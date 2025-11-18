@@ -10,7 +10,7 @@ Here are the main steps:
 4. Identify and remove reads that are likely PCR duplicates with `samtools`.
 5. Call genotypes at known SNP positions using `bcftools mpileup` and `bcftools call`. This is done separately for each chromosome.
 6. Merge VCF files from each chromosome.
-7. Reheader the VCF file to remove paths and `.bam` suffices.
+7. Rename samples in the VCF file to match names from the sample sheet.
 
 ## Contents
 
@@ -39,8 +39,10 @@ git clone https://github.com/ellisztamas/mpileup_call_pipeline.git
 
 A conda environment is provided to install the necessary dependencies.
 This will create a conda environment called `mpileup_call_pipeline`.
+I recommend using mamba instead of conda to install the environment.
 ```sh
-conda create env -f environment.yml
+cd mpileup_call_pipeline
+mamba env create -f environment.yml
 ```
 
 ## Input data
@@ -65,6 +67,8 @@ alice,/rawdata/rawdata_002_R1.fastq,/rawdata/rawdata_002_R2.fastq
 steve,/rawdata/rawdata_003_R1.fastq,/rawdata/rawdata_003_R2.fastq
 ```
 It is probably best if paths are given as absolute paths.
+
+If you're using data from the VBC NGS facility, you may be able to use this tool to create that sample sheet.
 
 ### Positions of known variable sites
 

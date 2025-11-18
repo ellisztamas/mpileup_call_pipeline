@@ -4,7 +4,8 @@ rule align_reads:
         r1 = "trimmed_reads/{sample}_val_1.fq.gz",
         r2 = "trimmed_reads/{sample}_val_2.fq.gz"
     output:
-        aligned_bam="aligned_bams/{sample}.bam"
+        bam="aligned_bams/{sample}.bam",
+        bai="aligned_bams/{sample}.bam.bai"
     resources:
         qos='short',
         mem_mb=1024,
@@ -15,8 +16,9 @@ rule align_reads:
     shell:
         """
         bwa mem \
-            -o {output} \
+            -o {output.bam} \
             {input.genome} \
             {input.r1} {input.r2} \
             > {log.out} 2> {log.err}
+        samtools index {output.bam}
         """
