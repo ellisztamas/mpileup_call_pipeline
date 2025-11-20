@@ -11,22 +11,31 @@ Steps
 - index: Index the output .bam file.
 """
 
+MAX_MEM_MB = 64000
+
+def scaled_mem(wildcards, attempt):
+    mem = 10*1024 * (2 ** (attempt - 1))
+    return min(mem, MAX_MEM_MB)
+
 rule remove_duplicate_reads:
     input:
         bam="aligned_bams/{sample}.bam",
-        bai="aligned_bams/{sample}.bam.bai"
     output:
-        bam="deduplicated_bams/{sample}.bam",
+        collated=temp("deduplicated_bams/{sample}_collated.bam"),
+        fixmate=temp("deduplicated_bams/{sample}_fixmate.bam"),
+        sorted=temp("deduplicated_bams/{sample}_sorted.bam"),
+        markdup="deduplicated_bams/{sample}.bam",
         bai="deduplicated_bams/{sample}.bam.bai"
     resources:
         qos='short',
-        mem_mb=4*1024,
-        runtime=2*60,
+        mem_mb=mem_for_attempt,
+        runtime=30*attempt,
+    threads:10
     shell:
         """
-        samtools collate     -O -u {input.bam} | \
-            samtools fixmate -m -u - - | \
-            samtools sort    -u - | \
-            samtools markdup -r - {output.bam}
-        samtools index {output.bai}
+        samtools collate -@ {threads} -o {output.collated} {input.bam}
+        samtools fixmate -@ {threads} -m {output.collated} {output.fixmate}
+        samtools sort -@ {threads} -o {output.sorted} {output.fixmate}
+        samtools markdup -@ {threads} -r {output.sorted} {output.markdup}
+        samtools index {output.markdup}
         """
