@@ -1,4 +1,10 @@
 
+MAX_MEM_MB = 64000
+
+def scaled_mem(wildcards, attempt):
+    mem = 8*1024 * (2 ** (attempt - 1))
+    return min(mem, MAX_MEM_MB)
+
 rule mpileup_call_by_chrom:
     """
     Joint genotyping of all samples at known sites, per chromosome.
@@ -17,8 +23,8 @@ rule mpileup_call_by_chrom:
     threads: 4
     resources:
         qos='short',
-        mem_mb=8*1024,
-        runtime=240
+        mem_mb=mem_for_attempt,
+        runtime=60 * 4 * attempt
     log:
         out="logs/mpileup_call_by_chrom/{chrom}.out",
         err="logs/mpileup_call_by_chrom/{chrom}.err"
