@@ -202,7 +202,7 @@ snakemake \
 Some explanations:
 
 * The convoluted arguments to `--config` pass the variables defined above to snakemake as wildcards. You could also put these in a config file, but this could get messy if you need to run the pipeline several times with different settings and aren't careful.
-* The argument `-j N` tells the pipeline to run N jobs in parallel, assuming there are N input files. I used five as a place to start because the genotype calls are done by chromosome, and *Arabidopsis thaliana* has five chromosomes. Increase the number if you want to run more samples in parallel.
+* The argument `-j N` tells the pipeline to run N jobs in parallel, assuming there are N input files. I used five as a place to start because the genotype calls are done by chromosome, and *Arabidopsis thaliana* has five chromosomes. Increase the number if you want to run more samples in parallel (for example, `-j 96` for a 96-well plate).
 * `--rerun-incomplete` tells the pipeline to start any failed steps from scratch if you encounter and error and need to come back to it.
 * `--restart-times 2` tells the pipeline to try failed jobs again. For a couple of resource intensive steps, it wil try again with additional memory and time.
 
