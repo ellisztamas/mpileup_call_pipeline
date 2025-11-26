@@ -11,7 +11,7 @@ project_name: "you_should_read_the_config_file"
 # 1. sample name
 # 2. paths to fastq files for mate pair 1.
 # 3. paths to fastq files for mate pair 2.
-sample_sheet: "/groups/nordborg/projects/crosses/tom/02_library/mpileup_call_pipeline/test_sample_sheet.csv"
+sample_sheet: "/groups/nordborg/projects/crosses/tom/02_library/mpileup_call_pipeline/test_data/test_sample_sheet.csv"
 
 
 # =============================== #
@@ -26,9 +26,6 @@ fasta: "/groups/nordborg/common_data/TAIR10/TAIR10_chromosome_files/TAIR10_chr_a
 # --targets-file in bcftools
 # See https://samtools.github.io/bcftools/bcftools.html#common_options.
 targets: "/groups/nordborg/common_data/fernandos_SNP_calls/1163g.179kB.prior15.gauss4.ts99.5.BIALLELIC.targets_file.tsv.gz"
-
-# Not used.
-# snp_calls: "/groups/nordborg/common_data/fernandos_SNP_calls/1163g.179kB.prior15.gauss4.ts99.5.BIALLELIC.vcf.gz"
 
 
 # ============================= #
