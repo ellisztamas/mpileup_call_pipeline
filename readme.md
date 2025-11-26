@@ -63,10 +63,10 @@ I recommend using mamba instead of conda to install the environment.
 
 #### With `module load`
 
-On the VBC Clip cluster you can load most of the dependencies with `module load`:
+It would be better to use the conda environment, but if you must you can load most of the dependencies on the VBC Clip cluster with `module load`:
 
 ```sh
-module load  build-env/f2022
+module load build-env/f2022
 module load bcftools/1.17-gcc-12.2.0
 module load bwa/0.7.17-gcccore-12.3.0
 module load multiqc/1.14-foss-2021b
@@ -75,12 +75,12 @@ module load snakemake/9.5.1-foss-2023b
 module load trim_galore/0.6.10-gcccore-12.2.0
 ```
 
-The [snakemake-executor-plugin-slurm](https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/slurm.html) dependency is needed (probably?) to run
-the pipeline with SLURM, which is not available with `module load`.
-You can install it directly:
+The [snakemake-executor-plugin-slurm](https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/slurm.html) dependency is needed to run the pipeline with SLURM, which is not available with `module load`.
+Also, the pandas package for Python is needed to read the sample sheet, but it needs a different build environment from the other dependencies.
+You can install them directly:
 
 ```sh
-pip install snakemake-executor-plugin-slurm
+pip install snakemake-executor-plugin-slurm pandas
 ```
 
 ## Input data
@@ -100,7 +100,7 @@ The pipeline uses a comma-separated sample sheet giving:
 2. paths to fastq files for mate pair 1.
 3. paths to fastq files for mate pair 2.
 
-The path should be defined in the config file.
+The path to the sample sheet should be defined in the config file.
 
 For example:
 ```
@@ -110,6 +110,7 @@ alice,/rawdata/rawdata_002_R1.fastq,/rawdata/rawdata_002_R2.fastq
 steve,/rawdata/rawdata_003_R1.fastq,/rawdata/rawdata_003_R2.fastq
 ```
 It is probably best if paths are given as absolute paths.
+At the moment it is not possible to have multiple samples with the same sample name.
 
 If you're using data from the VBC NGS facility, you may be able to use [this tool](https://methlab.readthedocs.io/en/latest/modules/align_plate_positions.html) to create that sample sheet.
 
