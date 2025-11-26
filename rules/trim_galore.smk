@@ -14,12 +14,13 @@ rule trim_galore:
     params:
         outdir = "trimmed_reads"
     resources:
-        qos='rapid',
-        mem_mb=1024,
-        runtime=60,
+        qos='short',
+        mem_mb=lambda wildcards, attempt: 1024 * (2**(1-attempt)),
+        runtime=lambda wildcards, attempt: 60 * attempt,
     log:
         out = "logs/trim_galore/{sample}.out",
         err = "logs/trim_galore/{sample}.err"
+    threads: 10
     shell:
         """
         trim_galore \
@@ -30,6 +31,7 @@ rule trim_galore:
             --basename {wildcards.sample} \
             --fastqc \
             --trim-n \
+            --cores {threads} \
             --output_dir {params.outdir} \
             {input.r1} {input.r2} \
             > {log.out} 2> {log.err}

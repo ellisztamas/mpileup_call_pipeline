@@ -1,30 +1,22 @@
 
-MAX_MEM_MB = 64000
-
-def scaled_mem(wildcards, attempt):
-    mem = 8*1024 * (2 ** (attempt - 1))
-    return min(mem, MAX_MEM_MB)
-
 rule mpileup_call_by_chrom:
     """
     Joint genotyping of all samples at known sites, per chromosome.
     Uses bcftools mpileup | bcftools call pipeline.
     """
     input:
-        bams = expand("deduplicated_bams/{sample}.bam", sample=SAMPLES),
-        bais = expand("deduplicated_bams/{sample}.bam.bai", sample=SAMPLES),
-        ref = config["fasta"],
-        targets = config["targets"]
+        bam = expand("deduplicated_bams/{sample}.bam", sample=SAMPLES),
+        bai = expand("deduplicated_bams/{sample}.bam.bai", sample=SAMPLES),
     output:
-        vcf = temp("mpileup_call_by_chrom/{chrom}.vcf.gz"),
-        indices = temp("mpileup_call_by_chrom/{chrom}.vcf.gz.csi")
+        vcf = "mpileup_call_by_chrom/{chrom}.vcf.gz",
+        indices = "mpileup_call_by_chrom/{chrom}.vcf.gz.csi"
     params:
         chrom = "{chrom}"
-    threads: 4
+    threads: 16
     resources:
         qos='short',
-        mem_mb=mem_for_attempt,
-        runtime=60 * 4 * attempt
+        mem_mb  = lambda wildcards, attempt: 8*1024 * (2**(attempt-1)),
+        runtime = lambda wildcards, attempt: 60 * 4 * attempt
     log:
         out="logs/mpileup_call_by_chrom/{chrom}.out",
         err="logs/mpileup_call_by_chrom/{chrom}.err"
@@ -32,20 +24,20 @@ rule mpileup_call_by_chrom:
         """
         bcftools mpileup \
             --threads {threads} \
-            --fasta-ref {input.ref} \
+            --fasta-ref {fasta} \
             --regions {params.chrom} \
-            --targets-file {input.targets} \
+            --targets-file {targets} \
             --annotate FORMAT/AD,FORMAT/DP \
             --max-depth 1000 \
             --min-MQ 20 \
             --min-BQ 20 \
             --output-type u \
-            {input.bams} \
+            {input.bam} \
         | bcftools call \
             --threads {threads} \
             --multiallelic-caller \
             --variants-only \
-            --targets-file {input.targets} \
+            --targets-file {targets} \
             --output-type z \
             --output {output.vcf} \
             > {log.out} 2> {log.err}

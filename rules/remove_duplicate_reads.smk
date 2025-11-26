@@ -11,12 +11,6 @@ Steps
 - index: Index the output .bam file.
 """
 
-MAX_MEM_MB = 64000
-
-def scaled_mem(wildcards, attempt):
-    mem = 10*1024 * (2 ** (attempt - 1))
-    return min(mem, MAX_MEM_MB)
-
 rule remove_duplicate_reads:
     input:
         bam="aligned_bams/{sample}.bam",
@@ -28,8 +22,8 @@ rule remove_duplicate_reads:
         bai="deduplicated_bams/{sample}.bam.bai"
     resources:
         qos='short',
-        mem_mb=mem_for_attempt,
-        runtime=30*attempt,
+        mem_mb =  lambda wildcards, attempt: 10*1024 * (2**(attempt-1)),
+        runtime = lambda wildcards, attempt: 30*attempt,
     threads:10
     shell:
         """
