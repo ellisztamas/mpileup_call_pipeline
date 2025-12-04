@@ -19,7 +19,7 @@ Here are the main steps:
 - [mpileup\_call\_pipeline](#mpileup_call_pipeline)
   - [Contents](#contents)
   - [Installation](#installation)
-  - [Clone this repo](#clone-this-repo)
+    - [Clone this repo](#clone-this-repo)
     - [Dependencies](#dependencies)
       - [As a conda environment](#as-a-conda-environment)
       - [With `module load`](#with-module-load)
@@ -34,13 +34,15 @@ Here are the main steps:
     - [Define paths](#define-paths)
     - [Run the pipeline](#run-the-pipeline)
   - [Output files](#output-files)
+  - [Troubleshooting](#troubleshooting)
+    - [Lots of red text](#lots-of-red-text)
   - [Acknowledgements](#acknowledgements)
 
 <!-- TOC end -->
 
 ## Installation
 
-## Clone this repo
+### Clone this repo
 
 Clone the repo to your project folder:
 ```sh
@@ -56,7 +58,7 @@ This will create a conda environment called `mpileup_call_pipeline`.
 
 ```sh
 cd mpileup_call_pipeline
-mamba env create -f environment.yml
+mamba env create -f environment.yaml
 ```
 
 I recommend using mamba instead of conda to install the environment.
@@ -220,8 +222,43 @@ If the pipeline worked, these files are probably the only ones you need to keep.
 
 You may also want to save the `multiqc` report which is run on fastq files after trimmin, found in the directory `trim_galore`.
 
+## Troubleshooting
+
+Errors are likely, and are quite hard to parse in snakemake.
+Here are some suggestions.
+
+### Lots of red text
+
+Somewhere towards the bottom you'll see 
+```
+Exiting because a job execution failed. Look below for error messages
+```
+
+Further down in orange you'll see a mention of an overall log file:
+```
+Complete log(s): /groups/nordborg/projects/crosses/tom/02_library/ibdpainting_pipeline/test_data/output/.snakemake/log/2025-11-26T121533.704848.snakemake.log
+```
+That log likely gives the details of *every* job, including paths to log files for individual jobs, but probably won't tell you exactly what went wrong.
+You can find individual log files by looking for lines that mention log files with something like
+```sh
+grep "log" /groups/nordborg/projects/crosses/tom/02_library/ibdpainting_pipeline/test_data/output/.snakemake/log/2025-11-26T121533.704848.snakemake.log
+```
+
+If you open those log files you may find something helpful.
+If not, you can try looking for lines that might help.
+```sh
+#
+individual_log_file=/convoluted/path/to/single/logfile.log
+grep "error" $individual_log_file # Try with capital letters as well
+grep "OOM" $individual_log_file # Increase the memory
+grep "TIMEOUT" $individual_log_file # Increase the time
+grep "missing" $individual_log_file # Maybe missing file
+grep "index" $individual_log_file # index files are a common culprit.
+```
+
 ## Acknowledgements
 
 This was adapted from shell scripts by Pieter Clauw.
 I used GPT 5.1 and Claude Sonnet for drafting rules.
 I created the TOC for this README using https://bitdowntoc.derlin.ch/.
+Thanks to Tal Dahan for testing.
