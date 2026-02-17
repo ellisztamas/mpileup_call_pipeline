@@ -1,9 +1,3 @@
-# Set the numbers of bases to clip from 5` end of reads 
-clip_R1 = config.get("clip_R1", 15)  # default 15 if not set
-clip_R2 = config.get("clip_R2", 15)  # default 15 if not set
-quality = config.get("quality", 20)
-length = config.get("length", 20)
-
 rule trim_galore:
     input:
         r1 = lambda wildcards: sample_dict[wildcards.sample]["fastq1"],
@@ -12,7 +6,11 @@ rule trim_galore:
         r1 = "trimmed_reads/{sample}_val_1.fq.gz",
         r2 = "trimmed_reads/{sample}_val_2.fq.gz"
     params:
-        outdir = "trimmed_reads"
+        outdir = "trimmed_reads",
+        clip_R1 = config.get("clip_R1", 15)  # default 15 if not set
+        clip_R2 = config.get("clip_R2", 15)  # default 15 if not set
+        quality = config.get("quality", 20)
+        length = config.get("length", 20)
     resources:
         qos='short',
         mem_mb=lambda wildcards, attempt: 1024 * (2**(1-attempt)),
@@ -21,13 +19,16 @@ rule trim_galore:
         out = "logs/trim_galore/{sample}.out",
         err = "logs/trim_galore/{sample}.err"
     threads: 10
+    benchmark:
+        "benchmarks/trim_galore/{sample}.tsv"
     shell:
         """
         trim_galore \
             --paired \
-            --quality {quality} \
-            --length {length} \
-            --clip_R1 {clip_R1} --clip_R2 {clip_R2} \
+            --quality {params.quality} \
+            --length {params.length} \
+            --clip_R1 {params.clip_R1} \
+            --clip_R2 {params.clip_R2} \
             --basename {wildcards.sample} \
             --fastqc \
             --trim-n \
