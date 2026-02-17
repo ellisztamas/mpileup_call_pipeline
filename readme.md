@@ -35,6 +35,7 @@ Here are the main steps:
     - [Run the pipeline](#run-the-pipeline)
   - [Output files](#output-files)
   - [Troubleshooting](#troubleshooting)
+    - [Key error](#key-error)
     - [Lots of red text](#lots-of-red-text)
   - [Acknowledgements](#acknowledgements)
 
@@ -226,6 +227,16 @@ You may also want to save the `multiqc` report which is run on fastq files after
 
 Errors are likely, and are quite hard to parse in snakemake.
 Here are some suggestions.
+
+### Key error
+
+The pipeline expects the same sheet to have columns named `sample`, `fastq1` and `fastq2`.
+An error similar to this:
+```
+KeyError in file "/path/to/pipeline/mpileup_pipeline/snakefile.smk", line 10:  'sample'
+```
+indicates that the pipeline did not find one of the columns it was looking for, in this case `sample`.
+Change the header in the sample sheet and try again.
 
 ### Lots of red text
 

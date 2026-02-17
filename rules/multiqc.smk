@@ -14,5 +14,7 @@ rule multiqc:
         qos='rapid',
         mem_mb=4*1024,
         runtime=60,
+    benchmark:
+        "benchmarks/multiqc.tsv"
     shell:
         "multiqc --filename {output} {input}"

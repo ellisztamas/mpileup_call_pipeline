@@ -3,8 +3,7 @@ rule merge_chromosomes:
     Concatenate per-chromosome VCFs into a single cohort VCF.
     """
     input:
-        vcf = expand("mpileup_call_by_chrom/{chrom}.vcf.gz", chrom=chromosomes),
-        index = expand("mpileup_call_by_chrom/{chrom}.vcf.gz.csi", chrom=chromosomes)
+        vcf = expand("call_genotypes/{chrom}.vcf", chrom=chromosomes),
     output:
         vcf = f"merge_chromosomes/{project_name}.vcf.gz"
     threads: 4
@@ -15,6 +14,8 @@ rule merge_chromosomes:
     log:
         out="logs/merge_chromosomes.out",
         err="logs/merge_chromosomes.err"
+    benchmark:
+        "benchmarks/merge_chromosomes.tsv"
     shell:
         """
         bcftools concat \

@@ -27,7 +27,6 @@ fasta: "/groups/nordborg/common_data/TAIR10/TAIR10_chromosome_files/TAIR10_chr_a
 # See https://samtools.github.io/bcftools/bcftools.html#common_options.
 targets: "/groups/nordborg/common_data/fernandos_SNP_calls/1163g.179kB.prior15.gauss4.ts99.5.BIALLELIC.targets_file.tsv.gz"
 
-
 # ============================= #
 # Things you can probably leave #
 # ============================= #
@@ -39,4 +38,8 @@ trim_galore:
   quality: 20 # Minimum quality score to trim ends
   length: 20 # Minimum read length
 
-# Add more settings here if needed.
+# Settings 
+mpileup:
+  max_depth: 10000 # Maximum total coverage allowed at a site across samples. median coverage x sample size x 4.
+  min_MQ: 20
+  min_BQ: 20

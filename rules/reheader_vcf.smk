@@ -6,7 +6,9 @@ rule reheader_vcf:
     resources:
         qos='rapid',
         mem_mb=1024,
-        runtime=10,
+        runtime=10
+    benchmark:
+        "benchmarks/reheader_vcf.tsv"
     shell:
         """
         # Extract current sample names from VCF

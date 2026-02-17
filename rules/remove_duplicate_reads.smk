@@ -23,15 +23,20 @@ rule remove_duplicate_reads:
     resources:
         qos='short',
         mem_mb =  lambda wildcards, attempt: 10*1024 * (2**(attempt-1)),
-        runtime = lambda wildcards, attempt: 30*attempt,
+        runtime = lambda wildcards, attempt: 60*2*attempt,
     threads:10
+    log:
+        out="logs/remove_duplicate_reads/{sample}.out",
+        err="logs/remove_duplicate_reads/{sample}.err"
     benchmark:
         "benchmarks/remove_duplicate_reads/{sample}.tsv"
     shell:
         """
-        samtools collate -@ {threads} -o {output.collated} {input.bam}
-        samtools fixmate -@ {threads} -m {output.collated} {output.fixmate}
-        samtools sort -@ {threads} -o {output.sorted} {output.fixmate}
-        samtools markdup -@ {threads} -r {output.sorted} {output.markdup}
-        samtools index {output.markdup}
+        (
+            samtools collate -@ {threads} -o {output.collated} {input.bam}
+            samtools fixmate -@ {threads} -m {output.collated} {output.fixmate}
+            samtools sort -@ {threads} -o {output.sorted} {output.fixmate}
+            samtools markdup -@ {threads} -r {output.sorted} {output.markdup}
+            samtools index {output.markdup}
+        ) > {log.out} 2> {log.err}
         """
