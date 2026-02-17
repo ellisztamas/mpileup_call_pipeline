@@ -25,6 +25,8 @@ rule remove_duplicate_reads:
         mem_mb =  lambda wildcards, attempt: 10*1024 * (2**(attempt-1)),
         runtime = lambda wildcards, attempt: 30*attempt,
     threads:10
+    benchmark:
+        "benchmarks/remove_duplicate_reads/{sample}.tsv"
     shell:
         """
         samtools collate -@ {threads} -o {output.collated} {input.bam}
