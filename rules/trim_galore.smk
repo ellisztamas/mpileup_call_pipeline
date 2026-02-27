@@ -7,9 +7,9 @@ rule trim_galore:
         r2 = "trimmed_reads/{sample}_val_2.fq.gz"
     params:
         outdir = "trimmed_reads",
-        clip_R1 = config.get("clip_R1", 15)  # default 15 if not set
-        clip_R2 = config.get("clip_R2", 15)  # default 15 if not set
-        quality = config.get("quality", 20)
+        clip_R1 = config.get("clip_R1", 15),
+        clip_R2 = config.get("clip_R2", 15),
+        quality = config.get("quality", 20),
         length = config.get("length", 20)
     resources:
         qos='short',

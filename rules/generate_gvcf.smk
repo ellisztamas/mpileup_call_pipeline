@@ -9,8 +9,8 @@ rule generate_gvcf:
         tbi = "gvcfs/{sample}.{chrom}.g.vcf.gz.tbi"
     params:
         chrom = "{chrom}",
-        max_depth = config.get("max_depth", 10000)
-        min_MQ = config.get("min_MQ", 15)
+        max_depth = config.get("max_depth", 10000),
+        min_MQ = config.get("min_MQ", 15),
         min_BQ = config.get("min_BQ", 20)
     threads: 2
     resources:
