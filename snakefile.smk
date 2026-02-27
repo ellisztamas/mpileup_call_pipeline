@@ -19,8 +19,6 @@ fasta = config.get("fasta")
 # List of chromosome names.
 chromosomes = [line.split()[0] for line in open(f"{fasta}.fai")]
 
-# Path to file with known SNP positions
-targets=config.get("targets")
 
 
 # ---------- Include rule modules ----------
@@ -33,6 +31,7 @@ include: "rules/merge_gvcfs.smk"
 include: "rules/call_genotypes.smk"
 include: "rules/merge_chromosomes.smk"
 include: "rules/reheader_vcf.smk"
+include: "rules/summarise_vcf.smk"
 
 
 
@@ -40,4 +39,5 @@ include: "rules/reheader_vcf.smk"
 rule all:
     input:
         f"{project_name}.vcf.gz",
+        "summarise_vcf/summary.pdf",
         f"trimmed_reads/{project_name}_multiqc_report_post_trimming.html"
