@@ -1,5 +1,21 @@
 import os
 
+def calculate_runtime(wildcards, attempt, input):
+    """Calculate runtime based on input file sizes with 30-minute minimum"""
+    # Get file sizes in bytes and convert to GB
+    r1_size_gb = os.path.getsize(input.r1) / (1024**3)
+    r2_size_gb = os.path.getsize(input.r2) / (1024**3)
+    
+    # Calculate runtime: sum of sizes * 7 minutes
+    calculated_runtime = (r1_size_gb + r2_size_gb) * 7
+    
+    # Convert to minutes and apply minimum
+    runtime_minutes = max(calculated_runtime, 30)
+    
+    # Convert to seconds (Snakemake expects seconds)
+    return int(runtime_minutes * 60 * attempt)
+
+
 # ---------- Helper function for read groups ----------
 def get_read_group(sample):
     """
@@ -31,8 +47,8 @@ rule align_reads:
         rg = lambda wildcards: get_read_group(wildcards.sample)
     resources:
         qos='medium',
-        mem_mb=lambda wildcards, attempt: 1024*10 * attempt,
-        runtime= lambda wildcards, attempt: 60*8 * attempt,
+        mem_mb = lambda wildcards, attempt: 1024*10 * attempt,
+        runtime = calculate_runtime,
     log:
         out = "logs/align_reads/{sample}.out",
         err = "logs/align_reads/{sample}.err"
