@@ -10,6 +10,9 @@ dependencies:
   - snakemake-executor-plugin-slurm
   - bcftools
   - bwa
+  - matplotlib
   - multiqc
+  - numpy
   - samtools
+  - tectonic
   - trim-galore
