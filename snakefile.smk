@@ -1,11 +1,16 @@
 import pandas as pd
 
+# # Set a global default for all rules if not specified
+# max_open_files = config.get("max_open_files", 800)
+# default_resources:
+#     open_files = 800
+
 # Name for the VCF file.
 project_name=config.get("project_name")
 
 # Get sample sheet path from CLI/config; can provide a default if you like
 SAMPLESHEET = config.get("sample_sheet")
-samples_df = pd.read_csv(SAMPLESHEET)
+samples_df = pd.read_csv(SAMPLESHEET, dtype={"sample": str})
 # Check whether any samples appear more than once.
 counts = samples_df['sample'].value_counts()
 if any(counts>1):
@@ -25,7 +30,6 @@ chromosomes = [line.split()[0] for line in open(f"{fasta}.fai")]
 include: "rules/trim_galore.smk"
 include: "rules/multiqc.smk"
 include: "rules/align_reads.smk"
-include: "rules/remove_duplicate_reads.smk"
 include: "rules/generate_gvcf.smk"
 include: "rules/merge_gvcfs.smk"
 include: "rules/call_genotypes.smk"

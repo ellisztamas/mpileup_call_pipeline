@@ -9,9 +9,10 @@ rule generate_gvcf:
         tbi = "gvcfs/{sample}.{chrom}.g.vcf.gz.tbi"
     params:
         chrom = "{chrom}",
+        adjust_MQ = config.get("adjust_MQ", 50),
         max_depth = config.get("max_depth", 10000),
-        min_MQ = config.get("min_MQ", 15),
-        min_BQ = config.get("min_BQ", 20)
+        min_MQ    = config.get("min_MQ", 15),
+        min_BQ    = config.get("min_BQ", 20)
     threads: 2
     resources:
         mem_mb = 4*1024,
@@ -31,7 +32,7 @@ rule generate_gvcf:
                 --targets-file {input.targets} \
                 --annotate FORMAT/AD,FORMAT/DP \
                 --skip-indels \
-                --adjust-MQ 50 \
+                --adjust-MQ {params.adjust_MQ} \
                 --max-depth {params.max_depth} \
                 --min-MQ {params.min_MQ} \
                 --min-BQ {params.min_BQ} \

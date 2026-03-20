@@ -10,7 +10,7 @@ rule reheader_vcf:
     benchmark:
         "benchmarks/reheader_vcf.tsv"
     shell:
-        """
+        r"""
         # Extract current sample names from VCF
         bcftools query -l {input} > {input}.old_names.txt
         

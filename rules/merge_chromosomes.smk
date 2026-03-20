@@ -3,7 +3,7 @@ rule merge_chromosomes:
     Concatenate per-chromosome VCFs into a single cohort VCF.
     """
     input:
-        vcf = expand("call_genotypes/{chrom}.vcf", chrom=chromosomes),
+        vcf = expand("call_genotypes/{chrom}.vcf.gz", chrom=chromosomes),
     output:
         vcf = f"merge_chromosomes/{project_name}.vcf.gz"
     threads: 4
