@@ -48,7 +48,7 @@ rule merge_gvcfs_batch:
         bcftools merge \
             --threads {threads} \
             --gvcf {input.fasta} \
-            --merge none \
+            --merge snps \
             --output-type z \
             --output {output.merged_gvcf} \
             {input.gvcfs} \
@@ -92,7 +92,7 @@ rule merge_gvcfs_final:
             bcftools merge \
                 --threads {threads} \
                 --gvcf {input.fasta} \
-                --merge none \
+                --merge snps \
                 --output-type z \
                 --output {output.merged_gvcf} \
                 {input.gvcfs} \

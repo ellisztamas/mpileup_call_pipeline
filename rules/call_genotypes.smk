@@ -1,7 +1,8 @@
 rule call_genotypes:
     input:
         merged_gvcf = "merged_gvcfs/{chrom}.merged.g.vcf.gz",
-        merged_tbi  = "merged_gvcfs/{chrom}.merged.g.vcf.gz.tbi"
+        merged_tbi  = "merged_gvcfs/{chrom}.merged.g.vcf.gz.tbi",
+        targets = config["targets"]
     output:
         vcf = "call_genotypes/{chrom}.vcf.gz",
         tbi = "call_genotypes/{chrom}.vcf.gz.tbi"
@@ -22,6 +23,8 @@ rule call_genotypes:
             --ploidy 2 \
             --multiallelic-caller \
             --keep-alts \
+            --targets-file {input.targets} \
+            --constrain alleles \
             --format-fields GQ \
             --output-type z \
             --output {output.vcf} \
